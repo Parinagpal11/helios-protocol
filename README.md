@@ -171,20 +171,7 @@ Compressed NFTs via Bubblegum make minting 24,000× cheaper than standard NFTs �
 
 ---
 
-## Competitive Edge
 
-|  | Power Ledger | Brokers | **Helios** |
-|---|---|---|---|
-| US SREC compliance | ✗ | ✓ | ✓ |
-| Solana-native | ✗ | ✗ | ✓ |
-| On-chain burn = retirement | ✗ | ✗ | ✓ |
-| Cross-state liquidity | ✗ | ✗ | ✓ |
-| Sub-1% fee | ✗ | ✗ | ✓ |
-| Real-time oracle minting | ✗ | ✗ | ✓ |
-
-> Power Ledger is Airbnb for energy. Helios is the title registry that makes real estate transactions legally valid.
-
----
 
 ## Roadmap
 
