@@ -1,0 +1,20 @@
+[package]
+name = "helios-program"
+version = "0.1.0"
+description = "Helios Protocol — on-chain SREC marketplace"
+edition = "2021"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "helios_program"
+
+[features]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+cpi = ["no-entrypoint"]
+default = []
+
+[dependencies]
+anchor-lang = "0.30.1"
+anchor-spl = "0.30.1"

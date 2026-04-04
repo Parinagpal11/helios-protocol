@@ -1,0 +1,75 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --helios-dark:  #0A0F1E;
+  --helios-card:  #131928;
+  --helios-gold:  #F5A623;
+  --helios-lgold: #FFC85A;
+  --helios-warm:  #FF6B35;
+  --helios-muted: #8A96B0;
+}
+
+body {
+  background-color: var(--helios-dark);
+  color: white;
+  font-family: "Trebuchet MS", sans-serif;
+}
+
+.gold-border {
+  border: 1px solid rgba(245, 166, 35, 0.3);
+}
+
+.card {
+  background: var(--helios-card);
+  border: 1px solid rgba(245, 166, 35, 0.2);
+  border-radius: 12px;
+  padding: 1.5rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-minted  { background: rgba(245,166,35,0.15); color: #F5A623; }
+.badge-listed  { background: rgba(255,107,53,0.15); color: #FF6B35; }
+.badge-retired { background: rgba(68,187,68,0.15);  color: #44BB44; }
+
+.btn-primary {
+  background: var(--helios-gold);
+  color: #0A0F1E;
+  font-weight: 700;
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+.btn-primary:hover { opacity: 0.88; }
+.btn-primary:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.btn-outline {
+  background: transparent;
+  color: var(--helios-gold);
+  border: 1px solid rgba(245,166,35,0.5);
+  padding: 0.6rem 1.5rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.btn-outline:hover { background: rgba(245,166,35,0.08); }
+
+/* Wallet adapter override — match Helios theme */
+.wallet-adapter-button {
+  background: var(--helios-gold) !important;
+  color: #0A0F1E !important;
+  font-weight: 700 !important;
+  border-radius: 8px !important;
+}
+
+@import "@solana/wallet-adapter-react-ui/styles.css";

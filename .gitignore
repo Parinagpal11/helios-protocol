@@ -1,0 +1,32 @@
+# Environment — never commit your keys
+.env
+*.env
+.env.local
+
+# Dependencies
+node_modules/
+*/node_modules/
+
+# Build outputs
+dist/
+.next/
+target/
+
+# Solana
+*.so
+*.keypair
+
+# Database
+*.sql.bak
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# IDE
+.vscode/
+.idea/

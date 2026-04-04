@@ -1,0 +1,18 @@
+{
+  "name": "helios-protocol",
+  "version": "1.0.0",
+  "description": "Helios Protocol — on-chain SREC marketplace on Solana",
+  "private": true,
+  "scripts": {
+    "setup": "npm run setup:oracle && npm run setup:frontend",
+    "setup:oracle": "cd oracle-service && npm install",
+    "setup:frontend": "cd frontend && npm install",
+    "db:start": "docker-compose up -d",
+    "db:stop": "docker-compose down",
+    "oracle": "cd oracle-service && npm run dev",
+    "frontend": "cd frontend && npm run dev",
+    "program:build": "cd helios-program && anchor build",
+    "program:deploy": "cd helios-program && anchor deploy --provider.cluster devnet",
+    "program:test": "cd helios-program && anchor test"
+  }
+}
