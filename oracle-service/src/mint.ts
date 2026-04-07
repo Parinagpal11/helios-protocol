@@ -111,13 +111,13 @@ export async function mintSrec(params: {
 
     // Call mint_srec instruction
     const tx = await program.methods
-      .mintSrec({
-        systemId: params.systemId,
-        state: params.state,
-        vintageYear: params.vintageYear,
-        mwhGenerated: new anchor.BN(params.mwhGenerated),
-        serialNumber: new anchor.BN(params.serialNumber),
-      })
+  .mintSrec(
+    params.systemId,
+    params.state,
+    params.vintageYear,
+    new anchor.BN(params.mwhGenerated),
+    new anchor.BN(params.serialNumber),
+  )
       .accounts({
         srec: srecPda,
         marketplace: marketplacePda,
