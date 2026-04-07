@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token::{self, Token, TokenAccount, Transfer};
 
-declare_id!("REPLACE_WITH_YOUR_PROGRAM_ID");
+declare_id!("9uqoQXYJP3sgdU6zBBwLx1D1TvoWBN9EPHrK69d8C7F8");
 
 // ─────────────────────────────────────────────────────────────
 // HELIOS PROTOCOL — Core On-Chain Program
