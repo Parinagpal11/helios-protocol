@@ -14,5 +14,15 @@
     "program:build": "cd helios-program && anchor build",
     "program:deploy": "cd helios-program && anchor deploy --provider.cluster devnet",
     "program:test": "cd helios-program && anchor test"
+  },
+  "devDependencies": {
+    "@types/chai": "^5.2.3",
+    "chai": "^6.2.2",
+    "mocha": "^11.7.5",
+    "ts-mocha": "^11.1.0"
+  },
+  "dependencies": {
+    "@coral-xyz/anchor": "^0.32.1",
+    "@solana/web3.js": "^1.98.4"
   }
 }
