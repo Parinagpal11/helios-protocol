@@ -1,4 +1,5 @@
 "use client";
+import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
 import { useState, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
@@ -7,7 +8,6 @@ import { SrecCard } from "@/components/SrecCard";
 import { StatCard } from "@/components/StatCard";
 import { LiveMintFeed } from "@/components/LiveMintFeed";
 
-// Demo SRECs — in production these come from Helius DAS API
 const DEMO_SRECS = [
   {
     id: 1, serialNumber: 1, systemId: "SYS-NJ-001", state: "NJ",
@@ -29,6 +29,24 @@ const DEMO_SRECS = [
   },
 ];
 
+const SREC_PRICES = [
+  { state: "DC", price: 440, sacp: 480 },
+  { state: "NJ", price: 190, sacp: 228 },
+  { state: "MA", price: 250, sacp: 285 },
+  { state: "MD", price: 58,  sacp: 75  },
+  { state: "PA", price: 38,  sacp: 45  },
+];
+
+const priceHistory = [
+  { day: "Apr 1", NJ: 185, DC: 435, MA: 245 },
+  { day: "Apr 2", NJ: 188, DC: 438, MA: 248 },
+  { day: "Apr 3", NJ: 187, DC: 440, MA: 247 },
+  { day: "Apr 4", NJ: 190, DC: 442, MA: 250 },
+  { day: "Apr 5", NJ: 192, DC: 439, MA: 252 },
+  { day: "Apr 6", NJ: 190, DC: 441, MA: 250 },
+  { day: "Apr 7", NJ: 191, DC: 440, MA: 251 },
+];
+
 export default function ProducerPage() {
   const { connected, publicKey } = useWallet();
   const [srecs, setSrecs] = useState(DEMO_SRECS);
@@ -37,7 +55,6 @@ export default function ProducerPage() {
   const [txPending, setTxPending] = useState(false);
   const [latestMint, setLatestMint] = useState<string | null>(null);
 
-  // Simulate a new SREC minting live while on the page
   useEffect(() => {
     const timer = setTimeout(() => {
       const newSrec = {
@@ -55,7 +72,6 @@ export default function ProducerPage() {
   const handleList = async (srecId: number) => {
     if (!listPrice || isNaN(Number(listPrice))) return;
     setTxPending(true);
-    // Simulate transaction — replace with actual Anchor program call
     await new Promise((r) => setTimeout(r, 1800));
     setSrecs((prev) =>
       prev.map((s) =>
@@ -78,6 +94,7 @@ export default function ProducerPage() {
 
   return (
     <main className="min-h-screen px-6 py-8 max-w-5xl mx-auto">
+
       {/* Header */}
       <div className="flex items-center justify-between mb-8">
         <div>
@@ -111,11 +128,50 @@ export default function ProducerPage() {
       )}
 
       {/* Stats */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
         <StatCard label="Minted" value={minted} color="#F5A623" />
         <StatCard label="Listed" value={listed} color="#FF6B35" />
         <StatCard label="Retired" value={retired} color="#44BB44" />
         <StatCard label="Total Earned" value={`$${totalEarned}`} color="#FFC85A" />
+      </div>
+
+      {/* Live SREC Market Prices */}
+      <div className="card mb-6">
+        <h3 className="font-bold text-white mb-3" style={{ fontFamily: "Georgia" }}>
+          Live SREC Market Prices
+        </h3>
+        <div className="flex gap-3 flex-wrap">
+          {SREC_PRICES.map((s) => (
+            <div key={s.state} className="text-center p-3 rounded-lg flex-1"
+              style={{ background: "#0A0F1E", border: "0.5px solid rgba(245,166,35,0.2)", minWidth: "80px" }}>
+              <div className="text-lg font-bold" style={{ color: "#F5A623", fontFamily: "Georgia" }}>${s.price}</div>
+              <div className="text-xs font-bold text-white">{s.state}</div>
+              <div className="text-xs" style={{ color: "#8A96B0" }}>SACP ${s.sacp}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* 7-Day Price History */}
+      <div className="card mb-6">
+        <h3 className="font-bold text-white mb-4" style={{ fontFamily: "Georgia" }}>
+          7-Day Price History
+        </h3>
+        <ResponsiveContainer width="100%" height={200}>
+          <LineChart data={priceHistory}>
+            <XAxis dataKey="day" tick={{ fill: "#8A96B0", fontSize: 11 }} />
+            <YAxis tick={{ fill: "#8A96B0", fontSize: 11 }} />
+            <Tooltip contentStyle={{ background: "#131928", border: "1px solid #F5A623", color: "#fff" }} />
+            <Line type="monotone" dataKey="NJ" stroke="#F5A623" strokeWidth={2} dot={false} />
+            <Line type="monotone" dataKey="DC" stroke="#FF6B35" strokeWidth={2} dot={false} />
+            <Line type="monotone" dataKey="MA" stroke="#5BA4F5" strokeWidth={2} dot={false} />
+          </LineChart>
+        </ResponsiveContainer>
+        <div className="flex gap-4 mt-2 text-xs" style={{ color: "#8A96B0" }}>
+          <span style={{ color: "#F5A623" }}>— NJ</span>
+          <span style={{ color: "#FF6B35" }}>— DC</span>
+          <span style={{ color: "#5BA4F5" }}>— MA</span>
+        </div>
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
@@ -124,7 +180,6 @@ export default function ProducerPage() {
           <h2 className="text-lg font-bold text-white mb-4" style={{ fontFamily: "Georgia" }}>
             Your Certificates
           </h2>
-
           <div className="space-y-3">
             {srecs.map((srec) => (
               <SrecCard
@@ -139,10 +194,7 @@ export default function ProducerPage() {
 
         {/* Sidebar */}
         <div className="space-y-4">
-          {/* Live feed */}
           <LiveMintFeed />
-
-          {/* System info */}
           <div className="card">
             <h3 className="font-bold text-white mb-3" style={{ fontFamily: "Georgia" }}>
               System Info
@@ -192,10 +244,7 @@ export default function ProducerPage() {
               >
                 {txPending ? "Signing tx..." : "List Certificate"}
               </button>
-              <button
-                className="btn-outline"
-                onClick={() => setListingId(null)}
-              >
+              <button className="btn-outline" onClick={() => setListingId(null)}>
                 Cancel
               </button>
             </div>
