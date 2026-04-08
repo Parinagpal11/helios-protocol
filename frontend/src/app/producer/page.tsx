@@ -96,7 +96,7 @@ export default function ProducerPage() {
     <main className="min-h-screen px-6 py-8 max-w-5xl mx-auto">
 
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-8 gap-4">
         <div>
           <Link href="/" className="text-xs mb-1 block" style={{ color: "#8A96B0" }}>
             ← Helios Protocol
