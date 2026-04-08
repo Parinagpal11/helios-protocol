@@ -1,3 +1,7 @@
+[![Colosseum Frontier 2026](https://img.shields.io/badge/Colosseum-Frontier%202026-F5A623?style=for-the-badge)](https://colosseum.com/frontier)
+[![Solana](https://img.shields.io/badge/Solana-Devnet-9945FF?style=for-the-badge&logo=solana)](https://explorer.solana.com/address/9uqoQXYJP3sgdU6zBBwLx1D1TvoWBN9EPHrK69d8C7F8?cluster=devnet)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](LICENSE)
+
 # ☀️ Helios Protocol
 
 > **Mint, trade and retire solar energy certificates on Solana — in seconds, not months.**
