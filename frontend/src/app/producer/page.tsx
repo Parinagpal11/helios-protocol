@@ -106,8 +106,13 @@ export default function ProducerPage() {
   }, []);
 
   const handleList = async (srecId: number) => {
-    if (!listPrice || isNaN(Number(listPrice))) return;
-    setTxPending(true);
+  if (!listPrice || isNaN(Number(listPrice))) return;
+  if (!connected || !publicKey) {
+    alert("Please connect your wallet first");
+    return;
+  }
+  setTxPending(true);
+  try {
     await new Promise((r) => setTimeout(r, 1800));
     setSrecs((prev) =>
       prev.map((s) =>
@@ -118,8 +123,12 @@ export default function ProducerPage() {
     );
     setListingId(null);
     setListPrice("");
+  } catch (e: any) {
+    alert("Transaction failed: " + e.message);
+  } finally {
     setTxPending(false);
-  };
+  }
+};
 
   const minted  = srecs.filter((s) => s.status === "minted").length;
   const listed  = srecs.filter((s) => s.status === "listed").length;
