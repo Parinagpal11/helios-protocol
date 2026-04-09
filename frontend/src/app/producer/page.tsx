@@ -50,10 +50,46 @@ const priceHistory = [
 export default function ProducerPage() {
   const { connected, publicKey } = useWallet();
   const [srecs, setSrecs] = useState(DEMO_SRECS);
+  const [loading, setLoading] = useState(false);
   const [listingId, setListingId] = useState<number | null>(null);
   const [listPrice, setListPrice] = useState("");
   const [txPending, setTxPending] = useState(false);
   const [latestMint, setLatestMint] = useState<string | null>(null);
+
+  useEffect(() => {
+  if (!connected || !publicKey) return;
+  setLoading(true);
+  fetch(process.env.NEXT_PUBLIC_HELIUS_RPC!, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      jsonrpc: "2.0",
+      id: "helios",
+      method: "getAssetsByOwner",
+      params: { ownerAddress: publicKey.toString(), page: 1, limit: 50 },
+    }),
+  })
+    .then((r) => r.json())
+    .then((data) => {
+      const assets = data.result?.items || [];
+      if (assets.length > 0) {
+        const mapped = assets.map((a: any, i: number) => ({
+          id: i + 1,
+          serialNumber: i + 1,
+          systemId: a.content?.metadata?.attributes?.find((x: any) => x.trait_type === "systemId")?.value || "SYS-NJ-001",
+          state: a.content?.metadata?.attributes?.find((x: any) => x.trait_type === "state")?.value || "NJ",
+          vintageYear: 2026,
+          mwhGenerated: 1,
+          status: "minted",
+          createdAt: new Date().toISOString(),
+          estimatedValue: 190,
+        }));
+        setSrecs(mapped);
+      }
+    })
+    .catch(console.error)
+    .finally(() => setLoading(false));
+}, [connected, publicKey]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -177,6 +213,11 @@ export default function ProducerPage() {
       <div className="grid md:grid-cols-3 gap-6">
         {/* SREC list */}
         <div className="md:col-span-2">
+          {loading && (
+            <p className="text-sm mb-4" style={{ color: "#8A96B0" }}>
+              Loading certificates from wallet...
+              </p>
+            )}
           <h2 className="text-lg font-bold text-white mb-4" style={{ fontFamily: "Georgia" }}>
             Your Certificates
           </h2>
