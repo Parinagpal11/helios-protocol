@@ -7,7 +7,6 @@ import { SrecCard } from "@/components/SrecCard";
 import { StatCard } from "@/components/StatCard";
 import { generateRetirementPDF } from "@/lib/retirementPdf";
 
-// Demo marketplace listings
 const MARKET_LISTINGS = [
   { id: 10, serialNumber: 10, systemId: "SYS-DC-001", state: "DC",
     vintageYear: 2026, mwhGenerated: 1, status: "listed",
@@ -29,39 +28,41 @@ const MARKET_LISTINGS = [
     vintageYear: 2026, mwhGenerated: 1, status: "listed",
     listPrice: 58, estimatedValue: 58,
     createdAt: new Date(Date.now() - 21600000).toISOString() },
+  { id: 15, serialNumber: 15, systemId: "SYS-PA-001", state: "PA",
+    vintageYear: 2025, mwhGenerated: 1, status: "listed",
+    listPrice: 38, estimatedValue: 38,
+    createdAt: new Date(Date.now() - 28800000).toISOString() },
 ];
 
 export default function UtilityPage() {
   const { connected } = useWallet();
   const [listings, setListings] = useState(MARKET_LISTINGS);
   const [stateFilter, setStateFilter] = useState("ALL");
+  const [vintageFilter, setVintageFilter] = useState("ALL");
+  const [priceSort, setPriceSort] = useState<"none" | "asc" | "desc">("none");
   const [purchasingId, setPurchasingId] = useState<number | null>(null);
   const [purchased, setPurchased] = useState<typeof MARKET_LISTINGS>([]);
   const [txPending, setTxPending] = useState(false);
 
   const states = ["ALL", "DC", "NJ", "MA", "MD", "PA", "VA"];
+  const vintages = ["ALL", "2026", "2025", "2024"];
 
-  const filtered = stateFilter === "ALL"
-    ? listings
-    : listings.filter((l) => l.state === stateFilter);
+  let filtered = listings
+    .filter((l) => stateFilter === "ALL" || l.state === stateFilter)
+    .filter((l) => vintageFilter === "ALL" || l.vintageYear === Number(vintageFilter));
+
+  if (priceSort === "asc") filtered = [...filtered].sort((a, b) => a.listPrice - b.listPrice);
+  if (priceSort === "desc") filtered = [...filtered].sort((a, b) => b.listPrice - a.listPrice);
 
   const totalSpent = purchased.reduce((s, p) => s + p.listPrice, 0);
 
   const handlePurchase = async (listing: typeof MARKET_LISTINGS[0]) => {
     setTxPending(true);
     setPurchasingId(listing.id);
-
-    // Simulate atomic burn + USDC transfer (replace with Anchor program call)
     await new Promise((r) => setTimeout(r, 2200));
-
-    // Remove from marketplace
     setListings((prev) => prev.filter((l) => l.id !== listing.id));
-
-    // Add to purchased/retired
     const retired = { ...listing, status: "retired" };
     setPurchased((prev) => [retired, ...prev]);
-
-    // Auto-generate retirement proof PDF
     await generateRetirementPDF({
       serialNumber: listing.serialNumber,
       systemId: listing.systemId,
@@ -72,10 +73,15 @@ export default function UtilityPage() {
       txHash: `HELIOS_TX_${Date.now()}`,
       retiredAt: new Date(),
     });
-
     setTxPending(false);
     setPurchasingId(null);
   };
+
+  const filterBtnStyle = (active: boolean) => ({
+    background: active ? "rgba(245,166,35,0.2)" : "rgba(255,255,255,0.05)",
+    border: active ? "1px solid rgba(245,166,35,0.6)" : "1px solid rgba(255,255,255,0.1)",
+    color: active ? "#F5A623" : "#8A96B0",
+  });
 
   return (
     <main className="min-h-screen px-6 py-8 max-w-5xl mx-auto">
@@ -103,39 +109,101 @@ export default function UtilityPage() {
         <StatCard label="Proof PDFs" value={purchased.length} color="#FF6B35" />
       </div>
 
-      {/* State filter */}
-      <div className="flex gap-2 mb-6 flex-wrap">
-        {states.map((s) => (
-          <button
-            key={s}
-            onClick={() => setStateFilter(s)}
-            className="px-3 py-1 rounded-full text-sm font-medium transition-all"
-            style={{
-              background: stateFilter === s
-                ? "rgba(245,166,35,0.2)"
-                : "rgba(255,255,255,0.05)",
-              border: stateFilter === s
-                ? "1px solid rgba(245,166,35,0.6)"
-                : "1px solid rgba(255,255,255,0.1)",
-              color: stateFilter === s ? "#F5A623" : "#8A96B0",
-            }}
-          >
-            {s}
-          </button>
-        ))}
+      {/* Filters row */}
+      <div className="card mb-6" style={{ padding: "1rem 1.25rem" }}>
+        <div className="flex flex-wrap gap-6">
+
+          {/* State filter */}
+          <div>
+            <p className="text-xs mb-2 font-medium" style={{ color: "#8A96B0" }}>State</p>
+            <div className="flex gap-2 flex-wrap">
+              {states.map((s) => (
+                <button
+                  key={s}
+                  onClick={() => setStateFilter(s)}
+                  className="px-3 py-1 rounded-full text-xs font-medium transition-all"
+                  style={filterBtnStyle(stateFilter === s)}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Vintage filter */}
+          <div>
+            <p className="text-xs mb-2 font-medium" style={{ color: "#8A96B0" }}>Vintage Year</p>
+            <div className="flex gap-2 flex-wrap">
+              {vintages.map((v) => (
+                <button
+                  key={v}
+                  onClick={() => setVintageFilter(v)}
+                  className="px-3 py-1 rounded-full text-xs font-medium transition-all"
+                  style={filterBtnStyle(vintageFilter === v)}
+                >
+                  {v}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Price sort */}
+          <div>
+            <p className="text-xs mb-2 font-medium" style={{ color: "#8A96B0" }}>Price</p>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setPriceSort("asc")}
+                className="px-3 py-1 rounded-full text-xs font-medium transition-all"
+                style={filterBtnStyle(priceSort === "asc")}
+              >
+                Low → High
+              </button>
+              <button
+                onClick={() => setPriceSort("desc")}
+                className="px-3 py-1 rounded-full text-xs font-medium transition-all"
+                style={filterBtnStyle(priceSort === "desc")}
+              >
+                High → Low
+              </button>
+              {priceSort !== "none" && (
+                <button
+                  onClick={() => setPriceSort("none")}
+                  className="px-3 py-1 rounded-full text-xs font-medium transition-all"
+                  style={{ background: "rgba(255,255,255,0.05)", border: "1px solid rgba(255,255,255,0.1)", color: "#8A96B0" }}
+                >
+                  Clear
+                </button>
+              )}
+            </div>
+          </div>
+
+        </div>
       </div>
 
       <div className="grid md:grid-cols-3 gap-6">
         {/* Marketplace */}
         <div className="md:col-span-2">
           <h2 className="text-lg font-bold text-white mb-4" style={{ fontFamily: "Georgia" }}>
-            Available SRECs {stateFilter !== "ALL" && `· ${stateFilter}`}
+            Available SRECs
+            {stateFilter !== "ALL" && ` · ${stateFilter}`}
+            {vintageFilter !== "ALL" && ` · ${vintageFilter}`}
+            {priceSort !== "none" && ` · Price ${priceSort === "asc" ? "↑" : "↓"}`}
+            <span className="text-sm font-normal ml-2" style={{ color: "#8A96B0" }}>
+              ({filtered.length} listings)
+            </span>
           </h2>
 
           {filtered.length === 0 ? (
             <div className="card text-center py-12" style={{ color: "#8A96B0" }}>
-              <p className="text-4xl mb-4">🎉</p>
-              <p>No listings available for {stateFilter}.</p>
+              <p className="text-4xl mb-4">🔍</p>
+              <p>No listings match your filters.</p>
+              <button
+                className="mt-4 text-xs"
+                style={{ color: "#F5A623" }}
+                onClick={() => { setStateFilter("ALL"); setVintageFilter("ALL"); setPriceSort("none"); }}
+              >
+                Clear all filters
+              </button>
             </div>
           ) : (
             <div className="space-y-3">
@@ -152,7 +220,7 @@ export default function UtilityPage() {
           )}
         </div>
 
-        {/* Retired certificates sidebar */}
+        {/* Sidebar */}
         <div>
           <h2 className="text-lg font-bold text-white mb-4" style={{ fontFamily: "Georgia" }}>
             Retired Certificates
@@ -170,25 +238,18 @@ export default function UtilityPage() {
                 <div key={p.id} className="card" style={{ padding: "1rem" }}>
                   <div className="flex justify-between items-start mb-2">
                     <span className="badge badge-retired">Retired</span>
-                    <span className="font-bold" style={{ color: "#F5A623" }}>
-                      ${p.listPrice}
-                    </span>
+                    <span className="font-bold" style={{ color: "#F5A623" }}>${p.listPrice}</span>
                   </div>
                   <p className="text-white text-sm font-medium">
                     HELIOS-{p.serialNumber}-{p.state}-{p.vintageYear}
                   </p>
-                  <p className="text-xs mt-1" style={{ color: "#8A96B0" }}>
-                    {p.systemId} · 1 MWh
-                  </p>
-                  <p className="text-xs mt-2" style={{ color: "#44BB44" }}>
-                    ✓ Retirement proof downloaded
-                  </p>
+                  <p className="text-xs mt-1" style={{ color: "#8A96B0" }}>{p.systemId} · 1 MWh</p>
+                  <p className="text-xs mt-2" style={{ color: "#44BB44" }}>✓ Retirement proof downloaded</p>
                 </div>
               ))}
             </div>
           )}
 
-          {/* Info box */}
           <div className="card mt-4" style={{ padding: "1rem" }}>
             <h3 className="font-bold text-white text-sm mb-2" style={{ fontFamily: "Georgia" }}>
               How retirement works
