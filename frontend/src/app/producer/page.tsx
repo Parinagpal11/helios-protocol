@@ -179,6 +179,38 @@ export default function ProducerPage() {
         <StatCard label="Retired" value={retired} color="#44BB44" />
         <StatCard label="Total Earned" value={`$${totalEarned}`} color="#FFC85A" />
       </div>
+      {/* Forecast Card */}
+<div className="card mb-6" style={{ borderColor: "rgba(245,166,35,0.3)" }}>
+  <div className="flex items-center justify-between mb-3">
+    <h3 className="font-bold text-white" style={{ fontFamily: "Georgia" }}>
+      Next SREC Forecast
+    </h3>
+    <span className="text-xs px-2 py-1 rounded-full" 
+      style={{ background: "rgba(245,166,35,0.1)", color: "#F5A623" }}>
+      AI Powered
+    </span>
+  </div>
+  <div className="flex items-center gap-6">
+    <div>
+      <p className="text-4xl font-bold" style={{ color: "#F5A623", fontFamily: "Georgia" }}>
+        ~10
+      </p>
+      <p className="text-sm" style={{ color: "#8A96B0" }}>days until next SREC</p>
+    </div>
+    <div className="flex-1">
+      <div className="flex justify-between text-xs mb-1" style={{ color: "#8A96B0" }}>
+        <span>Progress to next 1,000 kWh</span>
+        <span style={{ color: "#F5A623" }}>85%</span>
+      </div>
+      <div className="w-full rounded-full h-2" style={{ background: "#131928" }}>
+        <div className="h-2 rounded-full" style={{ width: "85%", background: "#F5A623" }} />
+      </div>
+      <p className="text-xs mt-2" style={{ color: "#8A96B0" }}>
+        Est. value: <span style={{ color: "#F5A623" }}>$190</span> · Avg production: 14 kWh/day
+      </p>
+    </div>
+  </div>
+</div>
 
       {/* Live SREC Market Prices */}
       <div className="card mb-6">

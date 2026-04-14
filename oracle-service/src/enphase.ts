@@ -96,7 +96,7 @@ async function getLiveProduction(systemId: string): Promise<SystemProduction> {
 export async function getProduction(
   systemId: string
 ): Promise<SystemProduction> {
-  const mode = process.env.ENPHASE_MODE || "mock";
+  const mode = process.env.ENPHASE_MODE || "sandbox";
 
   if (mode === "mock") {
     return getMockProduction(systemId);
