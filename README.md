@@ -187,13 +187,6 @@ Compressed NFTs via Bubblegum make minting 24,000× cheaper than standard NFTs �
 
 ---
 
-## Hackathon
-
-Built for the **Colosseum Frontier Hackathon 2026** — RWA Track.
-April 6 – May 11, 2026.
-
----
-
 ## License
 
 MIT © 2026 Helios Protocol
