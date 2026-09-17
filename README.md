@@ -175,17 +175,6 @@ Compressed NFTs via Bubblegum make minting 24,000× cheaper than standard NFTs �
 ---
 
 
-
-## Roadmap
-
-**Week 1** — Oracle + on-chain mint working on devnet
-**Week 2** — Full trading loop (list → buy → burn → settle)
-**Week 3** — Producer dashboard with real user testing
-**Week 4** — Utility portal + retirement proof + live URL
-**Week 5** — Pitch video + Colosseum submission
-
----
-
 ## License
 
 MIT © 2026 Helios Protocol
